@@ -1326,7 +1326,7 @@ paths:
                   - properties:
                       results:
                         items:
-                          $ref: '#/components/schemas/Spot'
+                          $ref: '#/components/schemas/SpotGet'
                         type: array
                     type: object
   '/spots/{id}':
@@ -1343,7 +1343,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Spot'
+                $ref: '#/components/schemas/SpotGet'
     put:
       summary: Update existing spot
       operationId: updateSpot
@@ -1355,7 +1355,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Spot'
+              $ref: '#/components/schemas/SpotUpdate'
         description: A JSON object containing spot information
         required: true
       responses:
@@ -2171,7 +2171,6 @@ components:
         automatically when the values are valid.
       example:
         foo: bar
-      readOnly: true
       type: object
     Custom:
       description: >-
@@ -2592,6 +2591,7 @@ components:
         production process and used to identify an individual device during its
         lifetime.
       example: 1337
+      readOnly: true
       type: integer
     Service:
       properties:
@@ -2616,7 +2616,16 @@ components:
         version:
           $ref: '#/components/schemas/Version'
       type: object
-    Spot:
+    SpotUpdate:
+      allOf:
+        - $ref: '#/components/schemas/SpotBase'
+        - properties:
+            report_location:
+              description: Unique identifier for resource.
+              example: 5b7d6cbd7503c445552a1664
+              type: string
+          type: object
+    SpotBase:
       properties:
         antenna_report_locations:
           description: >-
@@ -2644,12 +2653,6 @@ components:
           $ref: '#/components/schemas/Id'
         is_online:
           $ref: '#/components/schemas/IsOnline'
-        report_location:
-          $ref: '#/components/schemas/Location'
-        report_location_id:
-          $ref: '#/components/schemas/Id'
-        report_location_url:
-          $ref: '#/components/schemas/Url'
         request_counter:
           $ref: '#/components/schemas/RequestCounter'
         senses:
@@ -2672,6 +2675,22 @@ components:
         url:
           $ref: '#/components/schemas/Url'
       type: object
+    SpotGet:
+      allOf:
+        - $ref: '#/components/schemas/SpotBase'
+        - oneOf:
+            - properties:
+                report_location:
+                  $ref: '#/components/schemas/Location'
+              type: object
+            - properties:
+                report_location_id:
+                  $ref: '#/components/schemas/Id'
+              type: object
+            - properties:
+                report_location_url:
+                  $ref: '#/components/schemas/Url'
+              type: object
     SpotList:
       properties:
         custom:

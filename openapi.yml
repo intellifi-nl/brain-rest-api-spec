@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.9.0
+  version: v2.9.1
   title: Brain Web API
   license:
     name: MIT
@@ -1743,7 +1743,7 @@ components:
         `before_code` to set the end, excludes the given `code` value.
       example: e20000000000000000000000
       in: query
-      name: after_id
+      name: after_code
       schema:
         type: string
     Before:
@@ -1769,7 +1769,7 @@ components:
         `after_code` to set the start, excludes the given `code` value.
       example: e20000000000000000001fff
       in: query
-      name: after_id
+      name: before_code
       schema:
         type: string
     CodeHex:

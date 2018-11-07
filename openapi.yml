@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.8.0
+  version: v2.9.0
   title: Brain Web API
   license:
     name: MIT
@@ -477,10 +477,13 @@ paths:
       parameters:
         - $ref: '#/components/parameters/After'
         - $ref: '#/components/parameters/AfterId'
+        - $ref: '#/components/parameters/AfterCode'
         - $ref: '#/components/parameters/Before'
         - $ref: '#/components/parameters/BeforeId'
+        - $ref: '#/components/parameters/BeforeCode'
         - $ref: '#/components/parameters/From'
         - $ref: '#/components/parameters/FromId'
+        - $ref: '#/components/parameters/FromCode'
         - $ref: '#/components/parameters/IdOnly'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
@@ -488,6 +491,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/UntilCode'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -1733,6 +1737,15 @@ components:
       name: after_id
       schema:
         type: string
+    AfterCode:
+      description: >-
+        Limits directly on `code_hex`, sets the start of the range, use
+        `before_code` to set the end, excludes the given `code` value.
+      example: e20000000000000000000000
+      in: query
+      name: after_id
+      schema:
+        type: string
     Before:
       description: 'Limits on `time_created`, exclusive.'
       example: 2016-01-27T08:38:55.255Z
@@ -1748,6 +1761,15 @@ components:
       example: 56a88364e783152127d15340
       in: query
       name: before_id
+      schema:
+        type: string
+    BeforeCode:
+      description: >-
+        Limits directly on `code_hex`, sets the end of the range, use
+        `after_code` to set the start, excludes the given `code` value.
+      example: e20000000000000000001fff
+      in: query
+      name: after_id
       schema:
         type: string
     CodeHex:
@@ -1779,6 +1801,15 @@ components:
       example: 56a88364e783152127d15340
       in: query
       name: from_id
+      schema:
+        type: string
+    FromCode:
+      description: >-
+        Limits on `code_hex`, sets the start of the range, use `until_code` to
+        set the end, includes the given `code` value.
+      example: e20000000000000000000000
+      in: query
+      name: from_code
       schema:
         type: string
     Id:
@@ -2018,6 +2049,15 @@ components:
       example: 56a88364e783152127d15340
       in: query
       name: before_id
+      schema:
+        type: string
+    UntilCode:
+      description: >-
+        Limits on `code_hex`, sets the end of the range, use `from_code` to set
+        the start, includes the given `code` value.
+      example: e20000000000000000001ffff
+      in: query
+      name: until_code
       schema:
         type: string
   requestBodies:

@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.9.2
+  version: v2.9.3
   title: Brain Web API
   license:
     name: MIT
@@ -289,6 +289,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -432,6 +433,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TopicResourceType'
@@ -491,6 +493,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/UntilCode'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
@@ -601,6 +604,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -712,6 +716,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -811,6 +816,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -897,6 +903,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -953,6 +960,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -1023,6 +1031,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -1172,6 +1181,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -1313,6 +1323,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -1458,6 +1469,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -1573,6 +1585,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TopicResourceType'
@@ -1617,6 +1630,7 @@ paths:
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
@@ -2060,6 +2074,16 @@ components:
       name: until_code
       schema:
         type: string
+    TimeoutS:
+      description: >-
+        Overrides the default query timeout (in seconds). A value of 0 means
+        unlimited. IMPORTANT: using high timeouts in production code is strongly
+        discouraged as it may lead to stability issues.
+      example: 60
+      in: query
+      name: timeout_s
+      schema:
+        type: number
   requestBodies:
     ItemList:
       content:

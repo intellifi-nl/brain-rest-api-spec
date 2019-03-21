@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.10.3
+  version: v2.11.0
   title: Brain Web API
   license:
     name: MIT
@@ -2173,7 +2173,9 @@ components:
     Blob:
       properties:
         content_type:
-          description: Media type of the resource.
+          description: >-
+            Media type of the resource. Automatically detected when not given in
+            a POST.
           example: image/png
           type: string
         download_url:
@@ -2310,6 +2312,37 @@ components:
         - users
       example: items
       type: string
+    GeoCoords:
+      description: >-
+        Last known geolocation estimate of this object. Not guaranteed to be
+        included in response.
+      properties:
+        lat:
+          description: Latitude angle in degrees
+          type: number
+        lng:
+          description: Longitude angle in degrees
+          type: number
+        time_updated:
+          $ref: '#/components/schemas/TimeUpdated'
+      type: object
+    GeoCoordsReadOnly:
+      description: >-
+        Last known geolocation estimate of this object. Not guaranteed to be
+        included in response.
+      properties:
+        lat:
+          description: Latitude angle in degrees
+          readOnly: true
+          type: number
+        lng:
+          description: Longitude angle in degrees
+          readOnly: true
+          type: number
+        time_updated:
+          $ref: '#/components/schemas/TimeUpdated'
+      type: object
+      readOnly: true
     Id:
       description: Unique identifier for resource.
       example: 5b7d6cbd7503c445552a1664
@@ -2326,6 +2359,8 @@ components:
         - properties:
             code_hex:
               $ref: '#/components/schemas/CodeHex'
+            geo_coords:
+              $ref: '#/components/schemas/GeoCoordsReadOnly'
             id:
               $ref: '#/components/schemas/Id'
             is_present:
@@ -2680,15 +2715,6 @@ components:
         version:
           $ref: '#/components/schemas/Version'
       type: object
-    SpotUpdate:
-      allOf:
-        - $ref: '#/components/schemas/SpotBase'
-        - properties:
-            report_location:
-              description: Unique identifier for resource.
-              example: 5b7d6cbd7503c445552a1664
-              type: string
-          type: object
     SpotBase:
       properties:
         antenna_report_locations:
@@ -2713,6 +2739,8 @@ components:
           $ref: '#/components/schemas/Config'
         config_request:
           $ref: '#/components/schemas/ConfigRequest'
+        geo_coords:
+          $ref: '#/components/schemas/GeoCoords'
         id:
           $ref: '#/components/schemas/Id'
         is_online:
@@ -2755,6 +2783,15 @@ components:
                 report_location_url:
                   $ref: '#/components/schemas/Url'
               type: object
+    SpotUpdate:
+      allOf:
+        - $ref: '#/components/schemas/SpotBase'
+        - properties:
+            report_location:
+              description: Unique identifier for resource.
+              example: 5b7d6cbd7503c445552a1664
+              type: string
+          type: object
     SpotList:
       properties:
         custom:

@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.11.1
+  version: v2.11.2
   title: Brain Web API
   license:
     name: MIT
@@ -1379,7 +1379,7 @@ paths:
   '/spots/{id}/sets':
     get:
       summary: Get spotset
-      operationId: getSpotSetById
+      operationId: getSpotSetsById
       tags:
         - spots
       parameters:

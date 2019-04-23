@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.11.3
+  version: v2.12.0
   title: Brain Web API
   license:
     name: MIT
@@ -249,12 +249,18 @@ paths:
             application/json:
               schema:
                 properties:
+                  api_key_id:
+                    description: >-
+                      Reference to the static API key (/api/keys) used to
+                      authenticate this request (when
+                      auth_method=static_api_key)
+                    example: 5b7d6cbd7503c445552a1664
+                    type: string
                   auth_method:
                     description: What kind of authentication was used
                     enum:
                       - user_session
-                      - spot_events
-                      - localhost
+                      - internal
                       - static_api_key
                     type: string
                   authenticated:
@@ -268,6 +274,12 @@ paths:
                     type: object
                   url:
                     $ref: '#/components/schemas/Url'
+                  user_id:
+                    description: >-
+                      Reference to the user account (/api/users) used to
+                      authenticate this request (when auth_method=user_session)
+                    example: 5b7d6cbd7503c445552a1664
+                    type: string
                 type: object
   /blobs:
     get:

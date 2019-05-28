@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.13.1
+  version: v2.14.0
   title: Brain Web API
   license:
     name: MIT
@@ -145,6 +145,12 @@ tags:
       location that items can be localized at.
     externalDocs:
       url: 'https://intellifi.zendesk.com/hc/en-us/articles/360007502554'
+  - name: locationrules
+    description: >
+      Location rules are directives for the localization engine that may be
+      useful for certain solutions.
+    externalDocs:
+      url: ''
   - name: presences
     description: >
       The `presences` resource is an abstraction for the detection of an item
@@ -515,10 +521,12 @@ paths:
         - $ref: '#/components/parameters/IsPresent'
         - $ref: '#/components/parameters/Label'
         - $ref: '#/components/parameters/Location'
+        - $ref: '#/components/parameters/Metadata'
         - $ref: '#/components/parameters/MoveCount'
         - $ref: '#/components/parameters/Protocol'
         - $ref: '#/components/parameters/Sets'
         - $ref: '#/components/parameters/Technology'
+        - $ref: '#/components/parameters/Text'
         - $ref: '#/components/parameters/TimeLastPresent'
         - $ref: '#/components/parameters/TimeMoved'
         - $ref: '#/components/parameters/Type'
@@ -834,6 +842,8 @@ paths:
         - $ref: '#/components/parameters/TimeUpdated'
         - $ref: '#/components/parameters/Custom'
         - $ref: '#/components/parameters/Label'
+        - $ref: '#/components/parameters/Metadata'
+        - $ref: '#/components/parameters/Text'
       responses:
         '200':
           description: A JSON object containing a list of locations
@@ -890,6 +900,104 @@ paths:
       operationId: deleteLocation
       tags:
         - locations
+      parameters:
+        - $ref: '#/components/parameters/PathId'
+      responses:
+        '200':
+          $ref: '#/components/responses/200OkDelete'
+  /locationrules:
+    get:
+      summary: Get all location rules
+      operationId: getLocationRules
+      tags:
+        - locationrules
+      parameters:
+        - $ref: '#/components/parameters/After'
+        - $ref: '#/components/parameters/AfterId'
+        - $ref: '#/components/parameters/Before'
+        - $ref: '#/components/parameters/BeforeId'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/FromId'
+        - $ref: '#/components/parameters/IdOnly'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Populate'
+        - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Until'
+        - $ref: '#/components/parameters/UntilId'
+        - $ref: '#/components/parameters/TimeoutS'
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TimeCreated'
+        - $ref: '#/components/parameters/TimeUpdated'
+        - $ref: '#/components/parameters/Label'
+        - $ref: '#/components/parameters/LocationRuleType'
+        - $ref: '#/components/parameters/RuleEnabled'
+      responses:
+        '200':
+          description: A JSON object containing a list of location rules
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseEnvelope'
+                  - properties:
+                      results:
+                        items:
+                          $ref: '#/components/schemas/LocationRule'
+                        type: array
+                    type: object
+    post:
+      summary: Create location rule
+      operationId: addLocationRule
+      tags:
+        - locationrules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationRuleUpdate'
+        description: A JSON object containing the location rule
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/OkPost'
+  '/locationrules/{id}':
+    get:
+      summary: Get location rule
+      operationId: getLocationRuleById
+      tags:
+        - locationrules
+      parameters:
+        - $ref: '#/components/parameters/PathId'
+      responses:
+        '200':
+          description: A JSON object containing the location rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationRule'
+    put:
+      summary: Update existing location rule
+      operationId: updateLocationRule
+      tags:
+        - locationrules
+      parameters:
+        - $ref: '#/components/parameters/PathId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationRuleUpdate'
+        description: A JSON object containing new properties
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/200OkPut'
+    delete:
+      summary: Delete location rule
+      operationId: deleteLocationRule
+      tags:
+        - locationrules
       parameters:
         - $ref: '#/components/parameters/PathId'
       responses:
@@ -1049,6 +1157,8 @@ paths:
         - $ref: '#/components/parameters/TimeUpdated'
         - $ref: '#/components/parameters/Custom'
         - $ref: '#/components/parameters/Label'
+        - $ref: '#/components/parameters/Metadata'
+        - $ref: '#/components/parameters/Text'
         - description: Filter based on the total amount of items in the list
           example: 2
           in: query
@@ -1199,6 +1309,8 @@ paths:
         - $ref: '#/components/parameters/TimeUpdated'
         - $ref: '#/components/parameters/Custom'
         - $ref: '#/components/parameters/Label'
+        - $ref: '#/components/parameters/Metadata'
+        - $ref: '#/components/parameters/Text'
         - description: Filter based on the total amount of spots in the list
           example: 2
           in: query
@@ -1814,6 +1926,12 @@ components:
       name: custom
       schema:
         type: string
+    RuleEnabled:
+      description: Filter based on the `enabled` property.
+      in: query
+      name: enabled
+      schema:
+        $ref: '#/components/schemas/RuleEnabled'
     From:
       description: 'Limits on `time_created`, inclusive.'
       example: 2016-01-27T08:38:55.255Z
@@ -1844,7 +1962,7 @@ components:
       in: query
       name: id
       schema:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/IdReadOnly'
     IdOnly:
       allowEmptyValue: true
       description: >-
@@ -1874,7 +1992,7 @@ components:
       in: query
       name: item
       schema:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/IdReadOnly'
     Label:
       description: 'Filter based on the label value. Supports wildcards: `*`'
       example: '*foo*'
@@ -1898,7 +2016,22 @@ components:
       in: query
       name: location
       schema:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/IdReadOnly'
+    LocationRuleType:
+      description: Filter based on the type of location rule.
+      in: query
+      name: type
+      schema:
+        $ref: '#/components/schemas/LocationRuleType'
+    Metadata:
+      description: >-
+        Filter based on metadata. Does a partial match on any value in the
+        metadata object. It is also possible to do an exact/wildcard match on
+        specific properties, e.g. `metadata.foo=bar`
+      in: query
+      name: metadata
+      schema:
+        type: string
     MoveCount:
       description: Filter based on move count
       example: 5342
@@ -1974,7 +2107,7 @@ components:
       in: query
       name: sets
       schema:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/IdReadOnly'
     Sort:
       description: >-
         Allows you to sort on on or more fields in the resource. You may append
@@ -1992,6 +2125,16 @@ components:
       name: technology
       schema:
         $ref: '#/components/schemas/Technology'
+    Text:
+      description: >-
+        Filter based on a full text search. Searched properties depend on the
+        resource type. Matches on any of the given words. Supports quote (exact
+        words) and minus (exclude) operators.
+      example: penguin
+      in: query
+      name: text
+      schema:
+        type: string
     TimeCreated:
       description: Filter on the time the resource was created.
       example: 2018-08-30T09:51:59.737Z
@@ -2047,7 +2190,7 @@ components:
       in: query
       name: topic.resource
       schema:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/IdReadOnly'
     TopicResourceType:
       description: Filter on the topic resource type
       example: items
@@ -2202,7 +2345,7 @@ components:
           readOnly: true
           type: string
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         blob_key:
           description: Unique key to the blob
           example: foobar
@@ -2262,7 +2405,7 @@ components:
     Event:
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         payload:
           description: 'An object containing the payload, if any, of the event.'
           example:
@@ -2280,7 +2423,7 @@ components:
             arguments:
               $ref: '#/components/schemas/EventTopicArgument'
             resource_id:
-              $ref: '#/components/schemas/Id'
+              $ref: '#/components/schemas/IdReadOnly'
             resource_type:
               $ref: '#/components/schemas/EventTopicResourceType'
             resource_url:
@@ -2358,6 +2501,10 @@ components:
     Id:
       description: Unique identifier for resource.
       example: 5b7d6cbd7503c445552a1664
+      type: string
+    IdReadOnly:
+      description: Unique identifier for resource.
+      example: 5b7d6cbd7503c445552a1664
       readOnly: true
       type: string
     IsOnline:
@@ -2374,7 +2521,7 @@ components:
             geo_coords:
               $ref: '#/components/schemas/GeoCoordsReadOnly'
             id:
-              $ref: '#/components/schemas/Id'
+              $ref: '#/components/schemas/IdReadOnly'
             is_present:
               description: >-
                 Is this item actively detected in one of the zones at this
@@ -2418,7 +2565,7 @@ components:
               type: object
             - properties:
                 location_id:
-                  $ref: '#/components/schemas/Id'
+                  $ref: '#/components/schemas/IdReadOnly'
               type: object
             - properties:
                 location_url:
@@ -2429,11 +2576,13 @@ components:
         custom:
           $ref: '#/components/schemas/Custom'
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         label:
           $ref: '#/components/schemas/Label'
         list:
           $ref: '#/components/schemas/Url'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
         sha1:
           description: >-
             The sha1 checksum of the list. This will change when the list is
@@ -2480,11 +2629,13 @@ components:
           $ref: '#/components/schemas/Custom'
         label:
           $ref: '#/components/schemas/Label'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
       type: object
     Key:
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         is_read_only:
           description: Whether or not this key can only read and not write.
           type: boolean
@@ -2508,7 +2659,7 @@ components:
         - $ref: '#/components/schemas/KeyValuePairUpdate'
         - properties:
             id:
-              $ref: '#/components/schemas/Id'
+              $ref: '#/components/schemas/IdReadOnly'
             kv_key:
               description: Unique identifier for the value.
               example: foo
@@ -2540,12 +2691,12 @@ components:
     ListOfItemIds:
       description: List of item ids
       items:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/IdReadOnly'
       type: array
     ListOfSetIds:
       description: List of set ids
       items:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/IdReadOnly'
       readOnly: true
       type: array
     Location:
@@ -2553,9 +2704,11 @@ components:
         custom:
           $ref: '#/components/schemas/Custom'
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         label:
           $ref: '#/components/schemas/Label'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
         time_created:
           $ref: '#/components/schemas/TimeCreated'
         time_updated:
@@ -2564,6 +2717,119 @@ components:
           $ref: '#/components/schemas/Url'
       readOnly: true
       type: object
+    LocationRule:
+      properties:
+        conditions:
+          description: >-
+            Scope of this rule, e.g. moves at or away from a specific location
+            or towards a specific location.
+          anyOf:
+            - oneOf:
+                - properties:
+                    from_location:
+                      $ref: '#/components/schemas/Location'
+                      description: Rule applies to moves at or away from this location.
+                  type: object
+                - properties:
+                    from_location_id:
+                      $ref: '#/components/schemas/IdReadOnly'
+                  type: object
+                - properties:
+                    from_location_url:
+                      $ref: '#/components/schemas/Url'
+                  type: object
+            - oneOf:
+                - properties:
+                    to_location:
+                      $ref: '#/components/schemas/Location'
+                      description: Rule applies to moves towards this location.
+                  type: object
+                - properties:
+                    to_location_id:
+                      $ref: '#/components/schemas/IdReadOnly'
+                  type: object
+                - properties:
+                    to_location_url:
+                      $ref: '#/components/schemas/Url'
+                  type: object
+        enabled:
+          $ref: '#/components/schemas/RuleEnabled'
+        id:
+          $ref: '#/components/schemas/IdReadOnly'
+        label:
+          $ref: '#/components/schemas/Label'
+        parameters:
+          $ref: '#/components/schemas/LocationRuleParameters'
+        time_created:
+          $ref: '#/components/schemas/TimeCreated'
+        time_updated:
+          $ref: '#/components/schemas/TimeUpdated'
+        type:
+          $ref: '#/components/schemas/LocationRuleType'
+        url:
+          $ref: '#/components/schemas/Url'
+      type: object
+    LocationRuleParameters:
+      description: >-
+        Parameters for this rule; depends on the rule type. Refer to the rule
+        type specification for details.
+      type: object
+    LocationRuleType:
+      description: >
+        The type of location rule to be applied.
+
+        Allow: items at `conditions.from_location` can only move to
+        `conditions.to_location` and locations allowed in other `allow` rules
+        (destination whitelist).
+
+        Disallow: items at `conditions.from_location` cannot be moved to
+        `conditions.to_location` and locations disallowed in other `disallow`
+        rules (destination blacklist).
+
+        Disappeared: items disappearing at `conditions.from_location` will be
+        moved to `parameters.location` after `parameters.time_s` seconds.
+
+        Debounce: items moves from `conditions.from_location` (and optionally to
+        `conditions.to_location`) will be debounced with a period of
+        `parameters.time_s` seconds, for a maximum of `parameters.max_periods`
+        periods.
+      enum:
+        - allow
+        - disallow
+        - disappeared
+        - debounce
+      type: string
+    LocationRuleUpdate:
+      properties:
+        conditions:
+          description: >-
+            Scope of this rule, e.g. moves at or away from a specific location
+            or towards a specific location. The `from_location` is mandatory.
+            The `to_location` is either mandatory, optional or not allowed
+            depending on rule type.
+          properties:
+            from_location:
+              $ref: '#/components/schemas/Id'
+            to_location:
+              $ref: '#/components/schemas/Id'
+          type: object
+        enabled:
+          $ref: '#/components/schemas/RuleEnabled'
+        label:
+          $ref: '#/components/schemas/Label'
+        parameters:
+          $ref: '#/components/schemas/LocationRuleParameters'
+        type:
+          $ref: '#/components/schemas/LocationRuleType'
+      type: object
+    Metadata:
+      description: >-
+        Object of searchable metadata for this resource. Can be freely used to
+        store metadata properties.
+      example:
+        foo: bar
+      type: object
+      nullable: false
     MoveCount:
       description: >-
         How many times this item moved since it's created on this server. Note
@@ -2581,17 +2847,17 @@ components:
     Presence:
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         item:
           $ref: '#/components/schemas/Item'
         item_id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         item_url:
           $ref: '#/components/schemas/Url'
         location:
           $ref: '#/components/schemas/Location'
         location_id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         location_url:
           $ref: '#/components/schemas/Url'
         proximity:
@@ -2625,7 +2891,7 @@ components:
         resource:
           properties:
             id:
-              $ref: '#/components/schemas/Id'
+              $ref: '#/components/schemas/IdReadOnly'
             url:
               $ref: '#/components/schemas/Url'
           type: object
@@ -2677,6 +2943,10 @@ components:
       description: Set this to `true` to send a reset request for the specific resource.
       example: true
       type: boolean
+    RuleEnabled:
+      description: Whether this rule should be in effect (`true`) or on hold (`false`).
+      example: true
+      type: boolean
     Senses:
       description: >-
         Senses are values that in most cases are generated inside the spot
@@ -2713,7 +2983,7 @@ components:
         config_request:
           $ref: '#/components/schemas/ConfigRequest'
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         name:
           $ref: '#/components/schemas/Name'
         restart_request:
@@ -2742,7 +3012,7 @@ components:
               report_location:
                 $ref: '#/components/schemas/Location'
               report_location_id:
-                $ref: '#/components/schemas/Id'
+                $ref: '#/components/schemas/IdReadOnly'
               report_location_url:
                 $ref: '#/components/schemas/Url'
             type: object
@@ -2754,7 +3024,7 @@ components:
         geo_coords:
           $ref: '#/components/schemas/GeoCoords'
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         is_online:
           $ref: '#/components/schemas/IsOnline'
         request_counter:
@@ -2789,7 +3059,7 @@ components:
               type: object
             - properties:
                 report_location_id:
-                  $ref: '#/components/schemas/Id'
+                  $ref: '#/components/schemas/IdReadOnly'
               type: object
             - properties:
                 report_location_url:
@@ -2800,20 +3070,20 @@ components:
         - $ref: '#/components/schemas/SpotBase'
         - properties:
             report_location:
-              description: Unique identifier for resource.
-              example: 5b7d6cbd7503c445552a1664
-              type: string
+              $ref: '#/components/schemas/Id'
           type: object
     SpotList:
       properties:
         custom:
           $ref: '#/components/schemas/Custom'
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         label:
           $ref: '#/components/schemas/Label'
         list:
           $ref: '#/components/schemas/Url'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
         time_created:
           $ref: '#/components/schemas/TimeCreated'
         time_updated:
@@ -2845,14 +3115,14 @@ components:
           readOnly: true
           type: string
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         setid:
           description: Spot set unique identifier. Must be unique within a single device
           maximum: 255
           minimum: 0
           type: integer
         spot_id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         time_created:
           $ref: '#/components/schemas/TimeCreated'
         time_updated:
@@ -3101,7 +3371,7 @@ components:
         events_url:
           $ref: '#/components/schemas/Url'
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         populate_events:
           description: >-
             If set to `true`, resource references in an event (e.g. the location
@@ -3227,7 +3497,7 @@ components:
           example: Foo
           type: string
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReadOnly'
         is_admin:
           description: Whether or not this is an administrator.
           type: boolean

@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.14.4
+  version: v2.15.0
   title: Brain Web API
   license:
     name: MIT
@@ -2217,7 +2217,7 @@ components:
       description: 'Limits on `id`, includes the given `id` value.'
       example: 56a88364e783152127d15340
       in: query
-      name: before_id
+      name: until_id
       schema:
         type: string
     UntilCode:

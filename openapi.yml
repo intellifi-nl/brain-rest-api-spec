@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.16.0
+  version: v2.17.0
   title: Brain Web API
   license:
     name: MIT
@@ -1597,6 +1597,7 @@ paths:
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
+        - $ref: '#/components/parameters/Custom'
         - description: >-
             Filter on the topic filter. Make sure to use
             [percent-encoding](https://en.wikipedia.org/wiki/Percent-encoding)
@@ -2629,6 +2630,8 @@ components:
           $ref: '#/components/schemas/Custom'
         label:
           $ref: '#/components/schemas/Label'
+        location_request:
+          $ref: '#/components/schemas/LocationRequest'
         metadata:
           $ref: '#/components/schemas/Metadata'
       type: object
@@ -2717,6 +2720,12 @@ components:
           $ref: '#/components/schemas/Url'
       readOnly: true
       type: object
+    LocationRequest:
+      description: >-
+        Instruction for the location engine to forcibly localize the item at the
+        specified location id as soon as possible. Cleared automatically.
+      example: 5b7d6cbd7503c445552a1664
+      type: string
     LocationRule:
       properties:
         conditions:
@@ -3356,6 +3365,8 @@ components:
       type: object
     Subscription:
       properties:
+        custom:
+          $ref: '#/components/schemas/Custom'
         database_hold_time_h:
           description: >-
             The number of hours this event is retained in the database. *Only
@@ -3414,7 +3425,7 @@ components:
             filter events. See [Event
             filtering](https://intellifi.zendesk.com/hc/en-us/articles/360008791494)
             for more information
-          example: 'items/#'
+          example: items/#
           type: string
         url:
           $ref: '#/components/schemas/Url'

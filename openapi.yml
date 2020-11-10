@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: v2.17.0
+  version: 2.18.0+0.g0bcb16f.dirty
   title: Brain Web API
   license:
     name: MIT
@@ -76,8 +76,6 @@ tags:
     description: >
       Read-only route providing information about how the requesting client is
       authenticated on the API, as well as corresponding permissions.
-    externalDocs:
-      url: ''
   - name: blobs
     description: >
       The `blobs` resource provides a service for storing binary objects on the
@@ -88,8 +86,6 @@ tags:
 
 
       See also the `kvpairs` resource.
-    externalDocs:
-      url: ''
   - name: events
     description: >
       The `events` resource temporarily holds Brain events that match an event
@@ -125,8 +121,6 @@ tags:
       It is not possible to access this resource using API key authentication.
 
       This resource is therefore irrelevant to most applications.
-    externalDocs:
-      url: ''
   - name: kvpairs
     description: >
       The `kvpairs` resource provides a service for storing generic JSON
@@ -137,8 +131,6 @@ tags:
 
 
       See also the `blobs` resource.
-    externalDocs:
-      url: ''
   - name: locations
     description: >
       The `locations` resource is an abstraction for the area around a physical
@@ -149,8 +141,6 @@ tags:
     description: >
       Location rules are directives for the localization engine that may be
       useful for certain solutions.
-    externalDocs:
-      url: ''
   - name: presences
     description: >
       The `presences` resource is an abstraction for the detection of an item
@@ -167,8 +157,6 @@ tags:
 
       Some of these services have status information and/or configuration that
       can be managed using the `services` resource.
-    externalDocs:
-      url: ''
   - name: sets
     description: >
       It can be useful to group items or Smartspots in a list. The `sets`
@@ -177,7 +165,7 @@ tags:
       Sets can be utilized in various Brain Management Console utilities and can
       also be useful in custom Brain applications.
     externalDocs:
-      url: ''
+      url: 'https://intellifi.zendesk.com/hc/en-us/articles/360007824993'
   - name: spots
     description: >
       The `spots` resource contains representations of Smartspot devices that
@@ -216,8 +204,6 @@ tags:
       It is not possible to access this resource using API key authentication.
 
       This resource is therefore irrelevant to most applications.
-    externalDocs:
-      url: ''
 security:
   - CookieSid: []
   - HeaderApiKey: []
@@ -1972,7 +1958,7 @@ components:
       in: query
       name: id_only
       schema:
-        default: null
+        default: false
         type: boolean
     IsOnline:
       description: Filter based on the online status.
@@ -2093,7 +2079,7 @@ components:
       in: query
       name: results_only
       schema:
-        default: null
+        default: false
         type: boolean
     SerialNumber:
       description: Filter based on the serial number.
@@ -2617,6 +2603,8 @@ components:
       description: Type of item.
       enum:
         - barcode
+        - bluetitan
+        - gbtag
         - relay
         - smarttag
         - tag

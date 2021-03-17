@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: 2.18.0+0.g0bcb16f.dirty
+  version: 2.18.2+0.gca73049.dirty
   title: Brain Web API
   license:
     name: MIT
@@ -174,15 +174,27 @@ tags:
       It is possible to configure Smartspots through this resource.
 
 
-      Smartspots also have their own locally stored item sets, referred to as
+      Smartspots also have their own locally stored sets, referred to as
       "spotsets".
 
-      Spotsets can be created and manipulated within a single spot instance.
+      Spotsets can be created and managed within a single spot instance or by
+      using `spotsets` resource.
 
-      Created or updated spotsets are automatically transferred to the
-      Smartspot.
+      Created or updated spotsets are automatically synced between Smartspot and
+      server.
     externalDocs:
       url: 'https://intellifi.zendesk.com/hc/en-us/categories/360000685434'
+  - name: spotsets
+    description: >
+      The `spotsets` resource contains a collection of set definitons for each
+      Smartspot and allows for remote mananagement.
+
+      Spotsets are stored and used on the Smartspot locally and synced between
+      Smartspot and server.
+
+      Spotsets primarly are used as an input for Sense&Control.
+    externalDocs:
+      url: 'https://intellifi.zendesk.com/hc/en-us/articles/360009282834'
   - name: subscriptions
     description: >
       The `subscriptions` resource contains rules to store and/or deliver events
@@ -1488,7 +1500,7 @@ paths:
           $ref: '#/components/responses/200OkPut'
   '/spots/{id}/sets':
     get:
-      summary: Get spotset
+      summary: Get spotsets
       operationId: getSpotSetsById
       tags:
         - spots
@@ -1521,9 +1533,9 @@ paths:
         - spots
       parameters:
         - $ref: '#/components/parameters/PathId'
-        - description: Unique spot set identifier
+        - in: path
+          description: Unique spot set identifier
           example: 5b8d0b717503c445552a1865
-          in: path
           name: setId
           required: true
           schema:
@@ -1538,20 +1550,75 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200OkPut'
-  '/spots/sets/{setId}':
     get:
       summary: Get spotset
       operationId: getSpotSetById
       tags:
         - spots
       parameters:
-        - description: Unique spot set identifier
+        - $ref: '#/components/parameters/PathId'
+        - in: path
+          description: Unique spot set identifier
           example: 5b8d0b717503c445552a1865
-          in: path
           name: setId
           required: true
           schema:
             type: string
+      responses:
+        '200':
+          description: A JSON object containing the spotset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpotSet'
+  /spotsets:
+    get:
+      summary: Get spotsets
+      operationId: getSpotSetsById
+      tags:
+        - spotsets
+      responses:
+        '200':
+          description: A JSON object containing the spotset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpotSet'
+    post:
+      summary: Create spotset
+      operationId: addSpotSet
+      tags:
+        - spotsets
+      requestBody:
+        $ref: '#/components/requestBodies/SpotSet'
+      responses:
+        '201':
+          $ref: '#/components/responses/OkPost'
+  '/spotsets/{id}':
+    put:
+      summary: Update existing spotset
+      operationId: updateSpotSet
+      tags:
+        - spotsets
+      parameters:
+        - $ref: '#/components/parameters/PathId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpotSetUpdate'
+        description: A JSON object containing spotset information
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/200OkPut'
+    get:
+      summary: Get spotset
+      operationId: getSpotSetById
+      tags:
+        - spotsets
+      parameters:
+        - $ref: '#/components/parameters/PathId'
       responses:
         '200':
           description: A JSON object containing the spotset
@@ -3108,7 +3175,9 @@ components:
     SpotSetBase:
       properties:
         created_by:
-          description: Who was responsible for the creation of this spot list
+          description: >-
+            Who was responsible for the creation of this spot list. Value
+            determines who's allowed to manages this object.
           readOnly: true
           type: string
         id:
@@ -3141,7 +3210,7 @@ components:
     SpotSetTypeAny:
       properties:
         type:
-          description: Spot set type `any`; Matches all type of items / wildcard set
+          description: Spot set type `any`; A wildcard that matches all type of items
           enum:
             - any
           type: string
@@ -3155,8 +3224,8 @@ components:
           type: integer
         type:
           description: >-
-            Spot set type `areacode`; Item with the same Area Code as specified
-            by this set
+            Spot set type `areacode`; Matches Item with the same Area Code as
+            specified by this set
           enum:
             - areacode
           type: string
@@ -3170,8 +3239,8 @@ components:
           type: integer
         type:
           description: >-
-            Spot set type `codelength`; All item codes that have the exact same
-            bit length as specified by this value
+            Spot set type `codelength`; Matches all Item codes that have the
+            exact same length in bits as specified by this value
           enum:
             - codelength
           type: string
@@ -3190,8 +3259,9 @@ components:
           type: string
         type:
           description: >-
-            Spot set type `codemask`; All item codes that match code and mask
-            ((item code & mask) == (code & mask)) as specified by this set
+            Spot set type `codemask`; Matches all Items that return true as a
+            result of using the following equation ((Item.code & Item.mask) ==
+            (Set.code & Set.mask)).
           enum:
             - codemask
           type: string
@@ -3210,8 +3280,8 @@ components:
           type: string
         type:
           description: >-
-            Spot set type `coderange`; All item codes within specified range
-            match this set
+            Spot set type `coderange`; Matches all Items codes if within
+            specified range as specified by this set
           enum:
             - coderange
           type: string
@@ -3241,8 +3311,8 @@ components:
         type:
           description: >-
             Spot set type `extended`; Items that have the extended property
-            (key) and match requirement for value (operator) as specified by
-            this set
+            (key) and match the requirement for value using the specified
+            operator, as specified by this set
           enum:
             - extended
           type: string
@@ -3275,7 +3345,7 @@ components:
         mutation:
           description: >-
             Last mutation that was synchronized to the device. This is used for
-            internal synchronization between the device and the Brain.
+            internal synchronization between the device and the server.
           readOnly: true
           type: string
         restrictions:
@@ -3315,8 +3385,8 @@ components:
           $ref: '#/components/schemas/ItemProtocol'
         type:
           description: >-
-            Spot set type `protocol`; Items with the same Protocol as specified
-            by this set.
+            Spot set type `protocol`; Matches Items with the same Protocol as
+            specified by this set.
           enum:
             - protocol
           type: string
@@ -3326,7 +3396,9 @@ components:
         item_technology:
           $ref: '#/components/schemas/Technology'
         type:
-          description: Spot set type `technology`;
+          description: >-
+            Spot set type `technology`; Matches Items with the same Technology
+            as specified by this set.
           enum:
             - technology
           type: string
@@ -3337,8 +3409,8 @@ components:
           $ref: '#/components/schemas/ItemType'
         type:
           description: >-
-            Spot set type `type`; Items with the same type as specified by this
-            set.
+            Spot set type `type`; Matches Items with the same Type as specified
+            by this set.
           enum:
             - type
           type: string
@@ -3347,8 +3419,9 @@ components:
       properties:
         delete:
           description: >-
-            Mark this spot set for deletion. This will be synchronized to the
-            device, so deletion may take some time.
+            Request to delete a set. Remove request needs to be synchronized to
+            the device, so it may take some time before the resource is being
+            removed.
           type: boolean
       type: object
     Subscription:

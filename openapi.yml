@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: 2.19.3
+  version: 2.19.4
   title: Brain Web API
   license:
     name: MIT
@@ -515,7 +515,6 @@ paths:
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
         - $ref: '#/components/parameters/CodeHex'
-        - $ref: '#/components/parameters/Custom'
         - $ref: '#/components/parameters/IsPresent'
         - $ref: '#/components/parameters/Label'
         - $ref: '#/components/parameters/Location'
@@ -838,7 +837,6 @@ paths:
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
-        - $ref: '#/components/parameters/Custom'
         - $ref: '#/components/parameters/Label'
         - $ref: '#/components/parameters/Metadata'
         - $ref: '#/components/parameters/Text'
@@ -1153,7 +1151,6 @@ paths:
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
-        - $ref: '#/components/parameters/Custom'
         - $ref: '#/components/parameters/Label'
         - $ref: '#/components/parameters/Metadata'
         - $ref: '#/components/parameters/Text'
@@ -1305,7 +1302,6 @@ paths:
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
-        - $ref: '#/components/parameters/Custom'
         - $ref: '#/components/parameters/Label'
         - $ref: '#/components/parameters/Metadata'
         - $ref: '#/components/parameters/Text'
@@ -1650,7 +1646,6 @@ paths:
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/TimeCreated'
         - $ref: '#/components/parameters/TimeUpdated'
-        - $ref: '#/components/parameters/Custom'
         - description: >-
             Filter on the topic filter. Make sure to use
             [percent-encoding](https://en.wikipedia.org/wiki/Percent-encoding)
@@ -1913,8 +1908,10 @@ paths:
 components:
   parameters:
     After:
-      description: 'Limits on `time_created`, exclusive.'
-      example: 2016-01-27T08:38:55.255Z
+      description: >-
+        Limits on `time_created`, Marks the start of a range, optionally use
+        `before` to set the end. Result output excludes the given timestamp.
+      example: '2016-01-27T08:38:55.255Z'
       in: query
       name: after
       schema:
@@ -1922,8 +1919,9 @@ components:
         type: string
     AfterId:
       description: >-
-        Limits directly on `id` excludes the given `id` value, please note that
-        `id` is chronological.
+        Limits directly on `id`. Marks the start of a range, optionally use
+        `before_id` to set the end. Result output excludes the given `id` value.
+        Please note that `id` is in chronological order.
       example: 56a88364e783152127d15340
       in: query
       name: after_id
@@ -1931,16 +1929,19 @@ components:
         type: string
     AfterCode:
       description: >-
-        Limits directly on `code_hex`, sets the start of the range, use
-        `before_code` to set the end, excludes the given `code` value.
+        Limits directly on `code_hex`. Marks the start of a range, optionally
+        use `before_code` to set the end. Result output excludes the given
+        `code_hex` value.
       example: e20000000000000000000000
       in: query
       name: after_code
       schema:
         type: string
     Before:
-      description: 'Limits on `time_created`, exclusive.'
-      example: 2016-01-27T08:38:55.255Z
+      description: >-
+        Limits on `time_created`. Marks the end of a range, optionally use
+        `after` to set the start. Result output excludes the given timestamp.
+      example: '2016-01-27T08:38:55.255Z'
       in: query
       name: before
       schema:
@@ -1948,8 +1949,9 @@ components:
         type: string
     BeforeId:
       description: >-
-        Limits directly on `id` excludes the given `id` value, please note that
-        `id` is chronological.
+        Limits directly on `id`. Marks the end of a range, optionally use
+        `after_id` to set the start. Result output excludes the given `id`
+        value. Please note that `id` is in chronological order.
       example: 56a88364e783152127d15340
       in: query
       name: before_id
@@ -1957,8 +1959,9 @@ components:
         type: string
     BeforeCode:
       description: >-
-        Limits directly on `code_hex`, sets the end of the range, use
-        `after_code` to set the start, excludes the given `code` value.
+        Limits directly on `code_hex`. Marks the end of a range, optionally use
+        `after_code` to set the start. Result output excludes the given
+        `code_hex` value.
       example: e20000000000000000001fff
       in: query
       name: before_code
@@ -1968,18 +1971,25 @@ components:
       description: >-
         Filter based on the hexadecimal string representation of the item.
         Supports wildcards: `*`.
+      examples:
+        simple:
+          value: e20000000000000000001fff
+          summary: Returns resources whose `code_hex` is equal to value.
+        wildcard:
+          value: '*4444'
+          summary: >-
+            Returns resources whose `code_hex` ends in value like
+            `e20000000000000000004444`.
+        multi-wildcard:
+          value: '*5555*'
+          summary: >-
+            Returns resources whose `code_hex` contains value like
+            `e20055550000000000001fff`.
       example: '*42*'
       in: query
       name: code_hex
       schema:
         $ref: '#/components/schemas/CodeHex'
-    Custom:
-      description: 'Filter based on the custom value. Supports wildcards: `*`'
-      example: '*bar'
-      in: query
-      name: custom
-      schema:
-        type: string
     RuleEnabled:
       description: Filter based on the `enabled` property.
       in: query
@@ -1987,15 +1997,20 @@ components:
       schema:
         $ref: '#/components/schemas/RuleEnabled'
     From:
-      description: 'Limits on `time_created`, inclusive.'
-      example: 2016-01-27T08:38:55.255Z
+      description: >-
+        Limits on `time_created`. Marks the start of a range, optionally use
+        `until` to set the end. Result output includes the given timestamp.
+      example: '2016-01-27T08:38:55.255Z'
       in: query
       name: from
       schema:
         format: dateTime
         type: string
     FromId:
-      description: 'Limits on `id`, includes the given `id` value.'
+      description: >-
+        Limits on `id`. Marks the start of a range, optionally use `until_id` to
+        set the end. Result output includes the given `id` value. Please note
+        that `id` is in chronological order.
       example: 56a88364e783152127d15340
       in: query
       name: from_id
@@ -2003,15 +2018,16 @@ components:
         type: string
     FromCode:
       description: >-
-        Limits on `code_hex`, sets the start of the range, use `until_code` to
-        set the end, includes the given `code` value.
+        Limits on `code_hex`. Marks the start of a range, optionally use
+        `until_code` to set the end. Result output includes the given `code_hex`
+        value.
       example: e20000000000000000000000
       in: query
       name: from_code
       schema:
         type: string
     Id:
-      description: unique identifier
+      description: Unique identifier
       example: 5b8d0b717503c445552a1865
       in: query
       name: id
@@ -2095,7 +2111,16 @@ components:
         $ref: '#/components/schemas/MoveCount'
     Name:
       description: 'Filter based on the name of the resource. Supports wildcards: `*`'
-      example: '*foo*'
+      examples:
+        simple:
+          value: foo
+          summary: Returns resources whose `name` is equal to `foo`.
+        wildcard:
+          value: '*foo'
+          summary: Returns resources whose `name` ends in `foo` like `barfoo`.
+        multi-wildcard:
+          value: '*foo*'
+          summary: Returns resources whose `name` contains `foo` like `barfoobar`.
       in: query
       name: name
       schema:
@@ -2191,42 +2216,42 @@ components:
         type: string
     TimeCreated:
       description: Filter on the time the resource was created.
-      example: 2018-08-30T09:51:59.737Z
+      example: '2018-08-30T09:51:59.737Z'
       in: query
       name: time_created
       schema:
         $ref: '#/components/schemas/TimeCreated'
     TimeEvent:
       description: Filter on the time the event was generated on the device.
-      example: 2018-08-30T09:51:59.737Z
+      example: '2018-08-30T09:51:59.737Z'
       in: query
       name: time_event
       schema:
         $ref: '#/components/schemas/TimeExpire'
     TimeExpire:
       description: Filter on the time the event will expire.
-      example: 2018-08-30T09:51:59.737Z
+      example: '2018-08-30T09:51:59.737Z'
       in: query
       name: time_expire
       schema:
         $ref: '#/components/schemas/TimeExpire'
     TimeLastPresent:
       description: Filter based on the time last present
-      example: 2018-09-03T10:23:46.596Z
+      example: '2018-09-03T10:23:46.596Z'
       in: query
       name: time_last_present
       schema:
         type: string
     TimeMoved:
       description: Filter based on time last moved
-      example: 2018-08-30T09:51:59.737Z
+      example: '2018-08-30T09:51:59.737Z'
       in: query
       name: time_moved
       schema:
         $ref: '#/components/schemas/TimeMoved'
     TimeUpdated:
       description: Filter on the time the resource was last updated
-      example: 2018-08-30T09:51:59.737Z
+      example: '2018-08-30T09:51:59.737Z'
       in: query
       name: time_updated
       schema:
@@ -2260,15 +2285,20 @@ components:
       schema:
         $ref: '#/components/schemas/ItemType'
     Until:
-      description: 'Limits on `time_created`, inclusive.'
-      example: 2016-01-27T08:38:55.255Z
+      description: >-
+        Limits on `time_created`. Marks the end of a range, optionally use
+        `from` to set the start. Result output includes the given timestamp.
+      example: '2016-01-27T08:38:55.255Z'
       in: query
       name: until
       schema:
         format: dateTime
         type: string
     UntilId:
-      description: 'Limits on `id`, includes the given `id` value.'
+      description: >-
+        Limits on `id`. Marks the end of a range, optionally use `from_id` to
+        set the start. Result output includes the given `id` value. Please note
+        that `id` is in chronological order.
       example: 56a88364e783152127d15340
       in: query
       name: until_id
@@ -2276,8 +2306,9 @@ components:
         type: string
     UntilCode:
       description: >-
-        Limits on `code_hex`, sets the end of the range, use `from_code` to set
-        the start, includes the given `code` value.
+        Limits on `code_hex`. Marks the end of a range, optionally use
+        `from_code` to set the start. Result output includes the given
+        `code_hex` value.
       example: e20000000000000000001ffff
       in: query
       name: until_code
@@ -2595,7 +2626,7 @@ components:
               $ref: '#/components/schemas/TimeCreated'
             time_last_present:
               description: Last time the item was present.
-              example: 2018-08-30T09:51:59.737Z
+              example: '2018-08-30T09:51:59.737Z'
               format: dateTime
               readOnly: true
               type: string

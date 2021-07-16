@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: 2.19.4
+  version: 2.20.0
   title: Brain Web API
   license:
     name: MIT
@@ -302,6 +302,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -446,6 +447,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -506,6 +508,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -618,6 +621,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -730,6 +734,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -830,6 +835,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -918,6 +924,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -1016,6 +1023,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -1073,6 +1081,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -1144,6 +1153,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -1295,6 +1305,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -1438,6 +1449,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -1639,6 +1651,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -1755,6 +1768,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -1800,6 +1814,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Populate'
         - $ref: '#/components/parameters/ResultsOnly'
+        - $ref: '#/components/parameters/Select'
         - $ref: '#/components/parameters/Sort'
         - $ref: '#/components/parameters/Until'
         - $ref: '#/components/parameters/UntilId'
@@ -2180,6 +2195,34 @@ components:
       name: serial_number
       schema:
         $ref: '#/components/schemas/SerialNumber'
+    Select:
+      description: >-
+        Select which properties should be returned. You may add multiple fields
+        by giving a comma separated value. Select can also be used together with
+        populate: Specify the resource first, then a period(.) followed by the
+        field.
+      examples:
+        simple:
+          value: 'type,technology'
+          summary: Select `type` and `technology`.
+        populated:
+          value: 'location.label,location.metadata'
+          summary: >-
+            Select `label` and `metadata` from the populated resource
+            `location`. Note use together with `populate=location` to expand a
+            `location` reference into an actual resource, and allows the query
+            to work on populated resources.
+        mix:
+          value: 'type,location.label'
+          summary: >-
+            Select `type`, and `label` from the populated resource `location`.
+            Note use together with `populate=location` to expand a `location`
+            reference into an actual resource, and allows the query to work on
+            populated resources.
+      in: query
+      name: select
+      schema:
+        type: string
     Sets:
       description: Filter based on the set the resource is in.
       example: 5b8d0b717503c445552a1865

@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: 2.26.0+0.g6338d96.dirty
+  version: 2.26.1+0.gcc31fea.dirty
   title: Brain Web API
   license:
     name: MIT

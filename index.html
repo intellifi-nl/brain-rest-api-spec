@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Intellifi Brain REST API documentation</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+      }
+
+      /* Change the margin from the default 40px! In what kind of crazy world is this usefull?  */
+      #redoc > div > div.api-content > div {
+        padding: 10px 0 !important;
+      }
+      /* Inserted Authentication sections */
+      #redoc > div > div.api-content > div[data-section-id="section/Authentication"] >
+        div[data-section-id="section/Authentication/QueryApiKey"],
+        div[data-section-id="section/Authentication/HeaderApiKey"],
+        div[data-section-id="section/Authentication/CookieSid"] {
+        padding: 0px 0 !important;
+      }
+
+      /* Capatlize the first letter of the 'Security scheme type' in the table */
+      .security-details > tbody > tr > th:first-letter {
+        text-transform: capitalize;
+      }
+    </style>
+  </head>
+  <body>
+    <redoc id="redoc-container"></redoc>
+    <!-- Load from CDN but with local fallback -->
+    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+    <script>window.Redoc || document.write('<script src="/vendor/redoc/bundles/redoc.standalone.js"><\/script>')</script>
+
+    <script type="text/javascript">
+      Redoc.init(
+        "openapi.yml",
+        {
+          theme: {
+            colors: {
+              primary: {
+                main: "#388e3c"
+              }
+            }
+          }
+        }, document.getElementById('redoc-container'));
+    </script>
+  </body>
+</html>
